@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Favorite Person 🌸</title>
+    <style>
+        :root {
+            --pink: #ff85a2;
+            --soft-pink: #ffc1d9;
+            --dark-pink: #ff4f8b;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Georgia', serif;
+            background: #fff0f6;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Animated Background */
+        .bg-gradient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #ffd6e8, #fff0f6, #ffebf3);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 90%; max-width: 400px;
+            animation: fadeIn 1s ease;
+        }
+        .active { display: flex; }
+
+        /* Stage 1: The Envelope */
+        .envelope {
+            font-size: 80px; cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .envelope:hover { transform: scale(1.1) rotate(5deg); }
+
+        /* Stage 2: Tasks */
+        .task-btn {
+            background: white; border: 2px solid var(--pink);
+            padding: 15px 25px; border-radius: 30px;
+            margin: 10px; cursor: pointer; color: var(--dark-pink);
+            font-weight: bold; transition: 0.3s;
+        }
+        .task-btn:hover { background: var(--pink); color: white; }
+
+        /* Stage 3: The Final Card */
+        .final-card {
+            background: white; padding: 30px;
+            border-radius: 25px; box-shadow: 0 15px 35px rgba(255, 133, 162, 0.3);
+            border: 2px solid #ffe4ed;
+        }
+        h1 { color: var(--dark-pink); margin-top: 0; }
+        p { color: #555; line-height: 1.6; font-size: 17px; }
+
+        /* Decorations */
+        .petal { position: absolute; pointer-events: none; animation: fall linear infinite; }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+
+<div id="stage1" class="screen active">
+    <div class="envelope" onclick="nextStage(2)">✉️</div>
+    <h2 style="color: var(--dark-pink);">You have a new message...</h2>
+    <p>Tap the envelope to open</p>
+</div>
+
+<div id="stage2" class="screen">
+    <h2 style="color: var(--dark-pink);">Before you read this...</h2>
+    <p>I want you to know 3 things. Tap each one:</p>
+    <button class="task-btn" onclick="showReason(this, 'You make every day feel like spring 🌸')">Reason #1</button>
+    <button class="task-btn" onclick="showReason(this, 'Your kindness is my favorite thing about you ✨')">Reason #2</button>
+    <button class="task-btn" onclick="showReason(this, 'I am so lucky you are in my life 💗')">Reason #3</button>
+    <div id="reason-text" style="margin-top: 20px; font-weight: bold; color: var(--pink); min-height: 24px;"></div>
+    <button id="final-btn" class="task-btn" style="display:none; margin-top:30px; background: var(--dark-pink); color: white;" onclick="nextStage(3)">See my promise →</button>
+</div>
+
+<div id="stage3" class="screen">
+    <div class="final-card">
+        <h1>For My LOML 🌸</h1>
+        <p>
+            I fell for you because of the way you make me feel safe, 
+            the way you listen, and how you brighten up the room without even trying.
+        </p>
+        <p style="font-weight: bold; color: var(--dark-pink);">
+            I won’t rush you. I’ll wait for you — patiently, honestly, and with all my heart.
+        </p>
+        <div style="font-size: 20px; margin-top: 20px;">– Christina 💖</div>
+    </div>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="those-eyes.mp3" type="audio/mpeg">
+    <source src="those-eyes.mp3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    let reasonsFound = 0;
+
+    function nextStage(stageNum) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('stage' + stageNum).classList.add('active');
+        
+        if(stageNum === 3) {
+            document.getElementById('bgMusic').play();
+            startPetals();
+        }
+    }
+
+    function showReason(btn, text) {
+        document.getElementById('reason-text').innerText = text;
+        btn.style.opacity = '0.5';
+        btn.disabled = true;
+        reasonsFound++;
+        if(reasonsFound === 3) {
+            document.getElementById('final-btn').style.display = 'block';
+        }
+    }
+
+    function startPetals() {
+        setInterval(() => {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.innerHTML = Math.random() > 0.5 ? '🌸' : '💗';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.top = '-20px';
+            petal.style.fontSize = Math.random() * 20 + 10 + 'px';
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 5000);
+        }, 300);
+    }
+</script>
+
+</body>
+</html>
